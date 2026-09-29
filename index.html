@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gyankshetra Quiz | उत्तर मुगलकालीन सम्राट</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&display=swap');
+        body { font-family: 'Hind', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .gradient-card { background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #334155; }
+        .option-card { transition: all 0.2s ease-in-out; }
+        .option-card:hover { transform: translateY(-2px); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-3 md:p-6">
+
+    <!-- Header -->
+    <header class="max-w-3xl mx-auto w-full mb-4 text-center gradient-card p-4 rounded-xl shadow-lg">
+        <h1 class="text-xl md:text-2xl font-bold text-amber-400">Gyankshetra अभ्यास क्विज़ - 2026</h1>
+        <p class="text-xs md:text-sm text-slate-300 mt-1">विषय: उत्तर मुगलकालीन सम्राट (Later Mughal Emperors)</p>
+        <div class="flex justify-around items-center mt-3 pt-3 border-t border-slate-700 text-xs md:text-sm">
+            <span class="text-emerald-400 font-semibold"><i class="fas fa-check-circle mr-1"></i> सही: +1.0</span>
+            <span class="text-rose-400 font-semibold"><i class="fas fa-times-circle mr-1"></i> गलत: -0.33 (1/3)</span>
+            <span class="text-blue-400 font-semibold"><i class="fas fa-list-ol mr-1"></i> कुल प्रश्न: 30</span>
+        </div>
+    </header>
+
+    <!-- 1. START SCREEN -->
+    <main id="start-screen" class="max-w-md mx-auto w-full gradient-card p-6 rounded-2xl shadow-2xl text-center my-auto">
+        <div class="w-16 h-16 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-user-graduate text-3xl"></i>
+        </div>
+        <h2 class="text-xl font-bold text-slate-100 mb-1">अभ्यार्थी पंजीकरण (Registration)</h2>
+        <p class="text-xs text-slate-400 mb-6">क्विज़ शुरू करने के लिए अपना नाम दर्ज करें</p>
+
+        <div class="text-left mb-5">
+            <label for="candidate-name" class="block text-xs font-semibold text-slate-300 mb-2">आपका नाम (Candidate Name):</label>
+            <input type="text" id="candidate-name" placeholder="यहाँ अपना नाम लिखें..." class="w-full p-3 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-100 focus:outline-none focus:border-amber-400 transition">
+            <p id="name-error" class="text-rose-400 text-xs mt-1 hidden"><i class="fas fa-exclamation-circle mr-1"></i>कृपया क्विज़ शुरू करने से पहले अपना नाम दर्ज करें!</p>
+        </div>
+
+        <button onclick="startQuiz()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-lg text-sm transition shadow-lg flex items-center justify-center gap-2">
+            <i class="fas fa-play"></i> Start Quiz (क्विज़ शुरू करें)
+        </button>
+    </main>
+
+    <!-- 2. QUIZ SCREEN -->
+    <main id="quiz-screen" class="max-w-3xl mx-auto w-full flex-1 flex-col hidden">
+        <div class="gradient-card p-4 rounded-xl mb-4 shadow-md">
+            <div class="flex justify-between items-center text-sm font-semibold mb-2">
+                <span id="question-number" class="text-amber-400">प्रश्न 1/30</span>
+                <span id="user-display-name" class="text-slate-300 text-xs"><i class="fas fa-user mr-1 text-amber-400"></i> -</span>
+            </div>
+            <div class="w-full bg-slate-700 h-2.5 rounded-full overflow-hidden">
+                <div id="progress-bar" class="bg-amber-400 h-2.5 rounded-full transition-all duration-300" style="width: 3.33%;"></div>
+            </div>
+        </div>
+
+        <div class="gradient-card p-5 md:p-6 rounded-xl shadow-xl flex-1 flex flex-col justify-between">
+            <div>
+                <h2 id="question-text" class="text-base md:text-lg font-medium text-slate-100 mb-6 leading-relaxed">
+                    प्रश्न लोड हो रहा है...
+                </h2>
+                <div id="options-container" class="space-y-3"></div>
+            </div>
+
+            <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-700">
+                <button id="prev-btn" onclick="prevQuestion()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 text-sm font-medium rounded-lg transition hidden">
+                    <i class="fas fa-arrow-left mr-1"></i> पिछला
+                </button>
+                <div class="flex gap-2 ml-auto">
+                    <button id="skip-btn" onclick="nextQuestion()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium rounded-lg transition">
+                        आगे बढ़ें <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                    <button id="submit-btn" onclick="finishQuiz()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition hidden">
+                        क्विज़ समाप्त करें <i class="fas fa-paper-plane ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 3. SCORECARD SCREEN -->
+    <main id="result-screen" class="max-w-2xl mx-auto w-full gradient-card p-6 rounded-2xl shadow-2xl text-center hidden">
+        <div class="mb-4">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-amber-500/10 text-amber-400 rounded-full mb-2">
+                <i class="fas fa-trophy text-3xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-100">क्विज़ परिणाम / Scorecard</h2>
+            <p class="text-sm font-medium text-amber-400 mt-1" id="result-candidate-name">Candidate: Name</p>
+        </div>
+
+        <div class="bg-slate-900/80 p-5 rounded-xl border border-slate-700 mb-6">
+            <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold">अंतिम अंक (Final Score)</span>
+            <div class="text-4xl md:text-5xl font-black text-amber-400 my-1" id="final-score">0.00</div>
+            <div class="text-xs text-slate-400" id="accuracy-text">सटीकता: 0%</div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 text-left">
+            <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700">
+                <div class="text-xs text-slate-400">कुल प्रश्न</div>
+                <div class="text-lg font-bold text-slate-200">30</div>
+            </div>
+            <div class="bg-emerald-950/40 p-3 rounded-lg border border-emerald-800/50">
+                <div class="text-xs text-emerald-400"><i class="fas fa-check mr-1"></i>सही उत्तर</div>
+                <div class="text-lg font-bold text-emerald-300" id="correct-count">0</div>
+            </div>
+            <div class="bg-rose-950/40 p-3 rounded-lg border border-rose-800/50">
+                <div class="text-xs text-rose-400"><i class="fas fa-times mr-1"></i>गलत उत्तर</div>
+                <div class="text-lg font-bold text-rose-300" id="incorrect-count">0</div>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700">
+                <div class="text-xs text-slate-400"><i class="fas fa-minus mr-1"></i>छोड़े गए</div>
+                <div class="text-lg font-bold text-slate-300" id="unattempted-count">0</div>
+            </div>
+        </div>
+
+        <div class="text-left mb-6">
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Telegram शेयर संदेश का पूर्वावलोकन:</label>
+            <textarea id="telegram-msg" class="w-full h-28 p-3 bg-slate-900 border border-slate-700 rounded-lg text-xs font-mono text-emerald-300 focus:outline-none resize-none" readonly></textarea>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-3">
+            <button onclick="redirectToTelegram()" class="flex-1 bg-sky-600 hover:bg-sky-500 text-white font-medium py-2.5 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                <i class="fab fa-telegram-plane text-base"></i> Telegram पर स्कोर भेजें
+            </button>
+            <button onclick="restartQuiz()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-medium py-2.5 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                <i class="fas fa-redo"></i> पुनः प्रयास करें
+            </button>
+        </div>
+    </main>
+
+    <script>
+        const TELEGRAM_CHANNEL_URL = "http://t.me/Gyankshetra";
+        let candidateName = "";
+
+        const questions = [
+            { question: "1. 1707 ई. में औरंगज़ेब की मृत्यु के बाद कौन-सा मुगल शासक 'बहादुर शाह प्रथम' के नाम से सिंहासन पर बैठा?", options: ["मुअज़्ज़म", "आज़म", "कामबख़्श", "अकबर द्वितीय"], correct: 0 },
+            { question: "2. इतिहासकार ख़ाफ़ी ख़ान ने किस उत्तर मुगलकालीन सम्राट को 'शाहे-बेख़बर' कहा था?", options: ["जहांदार शाह", "बहादुर शाह प्रथम", "फारुखसियर", "मोहम्मद शाह"], correct: 1 },
+            { question: "3. किस उत्तर मुगल शासक को इतिहास में 'लम्पट मूर्ख' कहा गया है?", options: ["बहादुर शाह प्रथम", "जहांदार शाह", "रफ़ी-उद-दरजात", "मोहम्मद शाह"], correct: 1 },
+            { question: "4. किस मुगल बादशाह को 'घणित कायर' की उपाधि दी गई थी?", options: ["फारुखसियर", "शाह आलम द्वितीय", "जहांदार शाह", "अहमद शाह"], correct: 0 },
+            { question: "5. 'सैयद बंधुओं' (Sayyid Brothers) को भारतीय इतिहास में किस नाम से जाना जाता है?", options: ["साम्राज्य निर्माता", "राजा बनाने वाले (King Makers)", "मराठा संरक्षक", "धार्मिक गुरु"], correct: 1 },
+            { question: "6. ईस्ट इंडिया कंपनी को 1717 ई. में शाही फरमान (व्यापारिक अधिकार पत्र) किस मुगल बादशाह ने जारी किया था?", options: ["मोहम्मद शाह", "फारुखसियर", "बहादुर शाह प्रथम", "शाह आलम द्वितीय"], correct: 1 },
+            { question: "7. सबसे कम समय तक शासन करने वाला उत्तर मुगलकालीन सम्राट कौन था?", options: ["रफ़ी-उद-दौला", "रफ़ी-उद-दरजात", "जहांदार शाह", "इब्राहिम"], correct: 1 },
+            { question: "8. किस मुगल सम्राट को 'रंगीला' के उपनाम से जाना जाता था?", options: ["मोहम्मद शाह", "फारुखसियर", "अहमद शाह", "जहांदार शाह"], correct: 0 },
+            { question: "9. 1739 ई. में फ़ारस के आक्रमणकारी नादिरशाह ने किसके शासनकाल में दिल्ली पर आक्रमण किया था?", options: ["अहमद शाह", "मोहम्मद शाह 'रंगीला'", "फारुखसियर", "शाह आलम द्वितीय"], correct: 1 },
+            { question: "10. प्रसिद्ध 'तख्त-ए-ताऊस' (मयूर सिंहासन) और कोहिनूर हीरा भारत से कौन लूट कर ले गया था?", options: ["अहमद शाह अब्दाली", "नादिरशाह", "चंगेज़ ख़ान", "तैमूर लंग"], correct: 1 },
+            { question: "11. 'मयूर सिंहासन' (Takht-e-Taus) पर बैठने वाला अंतिम मुगल सम्राट कौन था?", options: ["शाह आलम प्रथम", "मोहम्मद शाह", "बहादुर शाह ज़फ़र", "अकबर द्वितीय"], correct: 1 },
+            { question: "12. 1739 में नादिरशाह और मुगल सेना के बीच प्रसिद्ध युद्ध कहाँ लड़ा गया था?", options: ["पानीपत", "कर्नाल", "तराइन", "बक्सर"], correct: 1 },
+            { question: "13. हैदराबाद के स्वतंत्र राज्य (आसिफ़ जाही वंश) की स्थापना 1724 ई. में किसने की थी?", options: ["चिनकिलिच ख़ान (निज़ाम-उल-मुल्क)", "सादत ख़ान", "मुर्शिद कुली ख़ान", "सफ़दरजंग"], correct: 0 },
+            { question: "14. अवध के स्वतंत्र राज्य की स्थापना किसने की थी?", options: ["सफ़दरजंग", "सादत ख़ान (बुर्हान-उल-मुल्क)", "शुजाउद्दौला", "आसिफउद्दौला"], correct: 1 },
+            { question: "15. बंगाल को मुगल साम्राज्य से अलग कर स्वतंत्र राज्य किसने बनाया?", options: ["सिराजुद्दौला", "अलीवर्दी ख़ान", "मुर्शिद कुली ख़ान", "मीर जाफ़र"], correct: 2 },
+            { question: "16. अहमद शाह अब्दाली ने भारत पर कुल कितनी बार आक्रमण किया?", options: ["5 बार", "7 बार", "8 बार", "10 बार"], correct: 2 },
+            { question: "17. पानीपत का तीसरा युद्ध (1761 ई.) किस मुगल सम्राट के शासनकाल में हुआ था?", options: ["अहमद शाह", "आलमगीर द्वितीय", "शाह आलम द्वितीय", "मोहम्मद शाह"], correct: 2 },
+            { question: "18. बक्सर का प्रसिद्ध युद्ध (1764 ई.) के समय मुगल सम्राट कौन था?", options: ["शाह आलम द्वितीय", "अकबर द्वितीय", "आलमगीर द्वितीय", "बहादुर शाह प्रथम"], correct: 0 },
+            { question: "19. 1765 ई. में ईस्ट इंडिया कंपनी के साथ इलाहाबाद की संधि किस मुगल शासक ने की थी?", options: ["फारुखसियर", "शाह आलम द्वितीय", "अकबर द्वितीय", "बहादुर शाह ज़फ़र"], correct: 1 },
+            { question: "20. अंग्रेज़ों का पेंशनभोगी बनने वाला पहला मुगल सम्राट कौन था?", options: ["बहादुर शाह ज़फ़र", "अकबर द्वितीय", "शाह आलम द्वितीय", "मोहम्मद शाह"], correct: 2 },
+            { question: "21. राजा राममोहन राय को 'राजा' की उपाधि किस मुगल सम्राट ने दी थी?", options: ["शाह आलम द्वितीय", "अकबर द्वितीय", "बहादुर शाह ज़फ़र", "फारुखसियर"], correct: 1 },
+            { question: "22. अंतिम मुगल सम्राट कौन था?", options: ["अकबर द्वितीय", "शाह आलम द्वितीय", "बहादुर शाह द्वितीय ('ज़फ़र')", "बहादुर शाह प्रथम"], correct: 2 },
+            { question: "23. 1857 के विद्रोह के समय भारत का मुगल सम्राट कौन था?", options: ["बहादुर शाह द्वितीय (ज़फ़र)", "शाह आलम द्वितीय", "अकबर द्वितीय", "मोहम्मद शाह"], correct: 0 },
+            { question: "24. 1857 की क्रांति के बाद अंग्रेज़ों ने बहादुर शाह ज़फ़र को बंदी बनाकर कहाँ निर्वासित कर दिया था?", options: ["अंडमान", "रंगून (म्यांमार)", "कोलकाता", "लंदन"], correct: 1 },
+            { question: "25. 'ज़फ़र' उपनाम से उर्दू कविताएं कौन-सा मुगल सम्राट लिखता था?", options: ["शाह आलम द्वितीय", "बहादुर शाह द्वितीय", "मोहम्मद शाह", "फारुखसियर"], correct: 1 },
+            { question: "26. किस उत्तर मुगल शासक की हत्या सैयद बंधुओं ने की थी?", options: ["फारुखसियर", "जहांदार शाह", "अहमद शाह", "शाह आलम प्रथम"], correct: 0 },
+            { question: "27. अहमद शाह अब्दाली के प्रथम आक्रमण (1748 ई.) के समय दिल्ली का मुगल सम्राट कौन था?", options: ["मोहम्मद शाह", "अहमद शाह", "आलमगीर द्वितीय", "शाह आलम द्वितीय"], correct: 0 },
+            { question: "28. किस मुगल सम्राट के शासनकाल में 1803 ई. में अंग्रेज़ों ने दिल्ली पर अधिकार कर लिया था?", options: ["शाह आलम द्वितीय", "अकबर द्वितीय", "बहादुर शाह द्वितीय", "अहमद शाह"], correct: 0 },
+            { question: "29. सफ़दरजंग किस उत्तर मुगल सम्राट का वज़ीर (प्रधानमन्त्री) था?", options: ["मोहम्मद शाह", "अहमद शाह", "फारुखसियर", "आलमगीर द्वितीय"], correct: 1 },
+            { question: "30. औरंगज़ेब की मृत्यु के समय मुगल साम्राज्य में कुल कितने प्रांत (सूबे) थे?", options: ["15", "18", "21", "24"], correct: 2 }
+        ];
+
+        let currentIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+
+        function startQuiz() {
+            const inputName = document.getElementById("candidate-name").value.trim();
+            const errorElement = document.getElementById("name-error");
+
+            if (inputName === "") {
+                errorElement.classList.remove("hidden");
+                return;
+            }
+
+            errorElement.classList.add("hidden");
+            candidateName = inputName;
+
+            document.getElementById("start-screen").classList.add("hidden");
+            document.getElementById("quiz-screen").classList.remove("hidden");
+            document.getElementById("quiz-screen").classList.add("flex");
+            document.getElementById("user-display-name").innerText = candidateName;
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = questions[currentIndex];
+            document.getElementById("question-number").innerText = `प्रश्न ${currentIndex + 1}/${questions.length}`;
+            document.getElementById("question-text").innerText = q.question;
+            
+            const progressBar = document.getElementById("progress-bar");
+            progressBar.style.width = `${((currentIndex + 1) / questions.length) * 100}%`;
+
+            const optionsContainer = document.getElementById("options-container");
+            optionsContainer.innerHTML = "";
+
+            q.options.forEach((option, idx) => {
+                const isSelected = userAnswers[currentIndex] === idx;
+                const optBtn = document.createElement("button");
+                optBtn.className = `option-card w-full text-left p-3.5 rounded-lg border text-sm font-medium flex items-center justify-between ${
+                    isSelected 
+                    ? "bg-amber-500/20 border-amber-400 text-amber-200" 
+                    : "bg-slate-800/80 border-slate-700 text-slate-200 hover:bg-slate-700/80"
+                }`;
+                optBtn.onclick = () => selectOption(idx);
+                optBtn.innerHTML = `
+                    <span>${option}</span>
+                    <span class="w-5 h-5 rounded-full border border-slate-500 flex items-center justify-center text-xs ${isSelected ? "border-amber-400 bg-amber-400 text-slate-900" : ""}">
+                        ${isSelected ? '<i class="fas fa-check"></i>' : String.fromCharCode(65 + idx)}
+                    </span>
+                `;
+                optionsContainer.appendChild(optBtn);
+            });
+
+            document.getElementById("prev-btn").classList.toggle("hidden", currentIndex === 0);
+            
+            if (currentIndex === questions.length - 1) {
+                document.getElementById("skip-btn").classList.add("hidden");
+                document.getElementById("submit-btn").classList.remove("hidden");
+            } else {
+                document.getElementById("skip-btn").classList.remove("hidden");
+                document.getElementById("submit-btn").classList.add("hidden");
+            }
+        }
+
+        function selectOption(index) {
+            userAnswers[currentIndex] = index;
+            loadQuestion();
+        }
+
+        function nextQuestion() {
+            if (currentIndex < questions.length - 1) {
+                currentIndex++;
+                loadQuestion();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                loadQuestion();
+            }
+        }
+
+        function finishQuiz() {
+            let correct = 0;
+            let incorrect = 0;
+            let unattempted = 0;
+
+            userAnswers.forEach((ans, idx) => {
+                if (ans === null) {
+                    unattempted++;
+                } else if (ans === questions[idx].correct) {
+                    correct++;
+                } else {
+                    incorrect++;
+                }
+            });
+
+            const positiveScore = correct * 1.0;
+            const negativeScore = incorrect * (1/3);
+            const finalScore = positiveScore - negativeScore;
+            const totalAttempted = correct + incorrect;
+            const accuracy = totalAttempted > 0 ? ((correct / totalAttempted) * 100).toFixed(1) : "0.0";
+
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("result-screen").classList.remove("hidden");
+
+            document.getElementById("result-candidate-name").innerText = `Candidate: ${candidateName}`;
+            document.getElementById("final-score").innerText = finalScore.toFixed(2);
+            document.getElementById("correct-count").innerText = correct;
+            document.getElementById("incorrect-count").innerText = incorrect;
+            document.getElementById("unattempted-count").innerText = unattempted;
+            document.getElementById("accuracy-text").innerText = `सटीकता: ${accuracy}%`;
+
+            const telegramMsg = 
+`📊 *Gyankshetra अभ्यास क्विज़ परिणाम - 2026*
+━━━━━━━━━━━━━━━━━
+👤 *छात्र का नाम:* ${candidateName}
+📚 *विषय:* उत्तर मुगलकालीन सम्राट (Later Mughals)
+📝 *कुल प्रश्न:* 30
+✅ *सही उत्तर:* ${correct}
+❌ *गलत उत्तर:* ${incorrect}
+⚪ *छोड़े गए:* ${unattempted}
+🎯 *सटीकता:* ${accuracy}%
+━━━━━━━━━━━━━━━━━
+🏆 *अंतिम स्कोर:* ${finalScore.toFixed(2)} / 30.00
+(Negative Marking: 1/3)`;
+
+            document.getElementById("telegram-msg").value = telegramMsg;
+        }
+
+        function redirectToTelegram() {
+            const msg = encodeURIComponent(document.getElementById("telegram-msg").value);
+            const shareUrl = `https://t.
